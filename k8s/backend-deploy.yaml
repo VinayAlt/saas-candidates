@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: saas-backend
+  namespace: saas
+spec:
+  type: ClusterIP
+  selector:
+    app: saas-backend
+  ports:
+    - port: 4000
+      targetPort: 4000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: saas-backend
+  namespace: saas
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: saas-backend
+  template:
+    metadata:
+      labels:
+        app: saas-backend
+    spec:
+      serviceAccountName: saas-backend-sa   # IRSA-linked ServiceAccount
+      containers:
+      - name: saas-backend
+        image: 784074784226.dkr.ecr.ap-south-1.amazonaws.com/saas-backend   # <-- Replace with ECR backend image URI
+        ports:
+          - containerPort: 4000
+        envFrom:
+          - secretRef:
+              name: saas-secrets
+          - configMapRef:
+              name: saas-config
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 4000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 4000
+          initialDelaySeconds: 30
+          periodSeconds: 20

@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: saas-frontend
+  namespace: saas
+spec:
+  type: ClusterIP
+  selector:
+    app: saas-frontend
+  ports:
+    - port: 80
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: saas-frontend
+  namespace: saas
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: saas-frontend
+  template:
+    metadata:
+      labels:
+        app: saas-frontend
+    spec:
+      containers:
+      - name: saas-frontend
+        image: 784074784226.dkr.ecr.ap-south-1.amazonaws.com/saas-frontend   # <-- Replace with ECR frontend image URI
+        ports:
+          - containerPort: 3000
+        envFrom:
+          - configMapRef:
+              name: saas-config
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
