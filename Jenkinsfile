@@ -1,6 +1,7 @@
 pipeline {
     agent any
     environment {
+        KUBECONFIG = "/var/lib/jenkins/.kube/config"
         AWS_REGION = "ap-south-1"
         AWS_ACCOUNT_ID = "784074784226"
         ECR_FRONTEND = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/saas-frontend"
@@ -50,8 +51,8 @@ pipeline {
                     kubectl apply -f k8s/namespace.yaml || true
                     kubectl apply -f k8s/configmap.yaml || true
                     kubectl apply -f k8s/secretproviderclass-saas-rds.yaml
-                    kubectl apply -f k8s/backend-deployment.yaml
-                    kubectl apply -f k8s/frontend-deployment.yaml
+                    kubectl apply -f k8s/backend-deploy.yaml
+                    kubectl apply -f k8s/frontend-deploy.yaml
                     kubectl apply -f k8s/backend-service.yaml
                     kubectl apply -f k8s/frontend-service.yaml
                     '''
