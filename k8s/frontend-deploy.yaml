@@ -40,12 +40,12 @@ spec:
             port: 80
           initialDelaySeconds: 5
           periodSeconds: 10
-          livenessProbe:          # optional but good
+        livenessProbe:          # optional but good
             httpGet:
               path: /
               port: 80
             initialDelaySeconds: 30
             periodSeconds: 20
-          envFrom:
+            envFrom:
             - configMapRef:
                 name: saas-config
