@@ -25,38 +25,29 @@ spec:
     metadata:
       labels:
         app: saas-backend
+      annotations:
+        secrets-store.csi.k8s.io/used-by: "saas-backend"
+        secrets-store.csi.k8s.io/sync-secret: "true"   # <-- this forces sync to K8s Secret
     spec:
-      serviceAccountName: saas-backend-sa   # IRSA-linked ServiceAccount
+      serviceAccountName: saas-backend-sa
+      containers:
+      - name: saas-backend
+        image: 784074784226.dkr.ecr.ap-south-1.amazonaws.com/saas-backend:latest
+        ports:
+          - containerPort: 4000
+        envFrom:
+          - secretRef:
+              name: db-secret         # <-- this will be created automatically
+          - configMapRef:
+              name: saas-config
+        volumeMounts:
+          - name: secrets-store
+            mountPath: /mnt/secrets-store
+            readOnly: true
       volumes:
         - name: secrets-store
           csi:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
-              secretProviderClass: "saas-rds-spc"
-      containers:
-        - name: saas-backend
-          image: 784074784226.dkr.ecr.ap-south-1.amazonaws.com/saas-backend  # ✅ replace with your pushed ECR image:tag
-          ports:
-            - containerPort: 4000
-          envFrom:
-            - secretRef:
-                name: db-secret             # ✅ synced from AWS Secrets Manager
-            - configMapRef:
-                name: saas-config           # optional, if you have a ConfigMap
-          volumeMounts:
-            - name: secrets-store
-              mountPath: "/mnt/secrets-store"
-              readOnly: true
-          readinessProbe:
-            httpGet:
-              path: /healthz
-              port: 4000
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: 4000
-            initialDelaySeconds: 30
-            periodSeconds: 20
+              secretProviderClass: saas-rds-spc
