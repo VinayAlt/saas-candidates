@@ -30,13 +30,22 @@ spec:
       - name: saas-frontend
         image: 784074784226.dkr.ecr.ap-south-1.amazonaws.com/saas-frontend   # <-- Replace with ECR frontend image URI
         ports:
-          - containerPort: 3000
+          - containerPort: 80
         envFrom:
           - configMapRef:
               name: saas-config
         readinessProbe:
           httpGet:
             path: /
-            port: 3000
+            port: 80
           initialDelaySeconds: 5
           periodSeconds: 10
+          livenessProbe:          # optional but good
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          envFrom:
+            - configMapRef:
+                name: saas-config
