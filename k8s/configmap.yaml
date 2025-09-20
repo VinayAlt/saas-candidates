@@ -4,5 +4,6 @@ metadata:
   name: saas-config
   namespace: saas
 data:
-  AWS_REGION: "us-east-1"
-  REACT_APP_API_URL: "https://saas.example.com"
+  AWS_REGION: "ap-south-1"
+  REACT_APP_API_URL: "http://saas-backend.saas.svc.cluster.local:4000"
+
