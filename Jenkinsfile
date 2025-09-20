@@ -54,7 +54,6 @@ pipeline {
                     kubectl apply -f k8s/backend-deploy.yaml
                     kubectl apply -f k8s/frontend-deploy.yaml
                     kubectl apply -f k8s/backend-service.yaml
-                    kubectl apply -f k8s/frontend-service.yaml
                     '''
                 }
             }
