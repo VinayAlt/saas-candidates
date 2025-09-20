@@ -1,9 +1,12 @@
-// src/db.js
 const { Pool } = require('pg');
 
-const connectionString = process.env.DATABASE_URL || 'postgres://postgres:postgres@db:5432/saasdb';
-
-// Pool will automatically pick up environment variables and is safe to use.
-const pool = new Pool({ connectionString });
+const pool = new Pool({
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  database: process.env.DB_NAME,
+});
 
 module.exports = pool;
+

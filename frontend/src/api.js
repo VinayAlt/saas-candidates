@@ -1,8 +1,15 @@
-import axios from 'axios';
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:4000";
 
-// Base API URL comes from env var at build/runtime
-const API = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:4000'
-});
+export async function fetchCandidates() {
+  const response = await fetch(`${API_BASE_URL}/candidates`);
+  return response.json();
+}
 
-export default API;
+export async function addCandidate(data) {
+  const response = await fetch(`${API_BASE_URL}/candidates`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
