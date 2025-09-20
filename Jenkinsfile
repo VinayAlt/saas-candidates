@@ -53,7 +53,6 @@ pipeline {
                     kubectl apply -f k8s/secretproviderclass-saas-rds.yaml
                     kubectl apply -f k8s/backend-deploy.yaml
                     kubectl apply -f k8s/frontend-deploy.yaml
-                    kubectl apply -f k8s/backend-service.yaml
                     '''
                 }
             }
