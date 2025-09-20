@@ -1,7 +1,8 @@
 FROM node:18-alpine
 WORKDIR /usr/src/app
 COPY package*.json ./
-RUN npm ci --silent
+RUN npm install --silent
 COPY . .
 EXPOSE 3000
-CMD ["npm","start"]
+CMD ["npm", "start"]
+
